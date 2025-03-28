@@ -1,0 +1,13 @@
+tech notes
+
+- when someone register and set status , category is Unknown
+
+featurs:
+
+- add new dashboard for who actually recieve the whatsapp message and who not recieve with phone and name
+- maybe scheduler
+
+regular notes 
+
+- remove the ones that dosent have phone?
+- remove the home phones
