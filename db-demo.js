@@ -55,4 +55,30 @@ const updateRSVP = async (phone, status, attendees = 0, category = "Unknown") =>
     }
 };
 
-module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests, updateRSVP };
+// Log undelivered WhatsApp messages
+const logUndeliveredMessage = async (phone, guestname, category) => {
+    try {
+        await pool.query(
+            "INSERT INTO undelivered_messages (phone, guestname, category) VALUES ($1, $2, $3) " +
+            "ON CONFLICT (phone) DO NOTHING",
+            [phone, guestname, category]
+        );
+        console.log(`❌ Logged undelivered message for ${phone}`);
+    } catch (err) {
+        console.error("❌ Error logging undelivered message:", err);
+    }
+};
+
+// Get all guests who didn't receive a WhatsApp message
+const getUndeliveredMessages = async () => {
+    try {
+        const res = await pool.query("SELECT * FROM undelivered_messages");
+        return res.rows;
+    } catch (err) {
+        console.error("❌ Error fetching undelivered messages:", err);
+        return [];
+    }
+};
+
+module.exports = { getAllRSVPs, getGuestName, getMaybeGuests, updateRSVP };
+// module.exports = pool;

@@ -1,5 +1,5 @@
 const xlsx = require("xlsx");
-const pool = require("./db"); // Import your db.js connection
+const pool = require("./db-demo"); // Import your db.js connection
 
 // Read the Excel file
 const workbook = xlsx.readFile("מוזמנים חתונה.xlsx"); // Update with correct file path
@@ -20,14 +20,12 @@ const guests = data.map((row) => ({
 
 // Insert data into PostgreSQL
 async function insertData() {
-  const client = await pool.connect();
-
   try {
     for (const guest of guests) {
       // Skip empty rows
       if (!guest.guestname || !guest.phone) continue;
 
-      await client.query(
+      await pool.query(
         `INSERT INTO demo (guestname, attendees, phone, category, status) 
          VALUES ($1, $2, $3, $4, $5)`,
         [guest.guestname, guest.attendees, guest.phone, guest.category, guest.status]
@@ -36,8 +34,6 @@ async function insertData() {
     console.log("✅ Data inserted successfully!");
   } catch (error) {
     console.error("❌ Error inserting data:", error);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 

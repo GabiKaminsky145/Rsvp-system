@@ -1,6 +1,6 @@
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const { getGuestName, getMaybeGuests, updateRSVP } = require("./db");
+const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("./db");
 const fs = require("fs");
 
 const waitingForPeople = {};
@@ -30,6 +30,7 @@ client.on("ready", async () => {
     for (let phone of guestsToSend) {
         const chatId = phone + "@c.us";
         const guestName = await getGuestName(phone);
+        const category = await getCategory(phone);
         const nameToUse = guestName ? guestName : "אורח";
 
         const message = `שלום, ${nameToUse}! בחר אחת מהאפשרויות:\n` +
@@ -37,6 +38,7 @@ client.on("ready", async () => {
             "2️⃣ לא מגיע/ה\n" +
             "3️⃣ אולי";
 
+        try{
         // Send image first
         // await client.sendMessage(chatId, media, { caption: "💌 ההזמנה לחתונה שלנו!" });
         // console.log(`📸 Sent image to ${phone}`);
@@ -44,6 +46,12 @@ client.on("ready", async () => {
         // Send message after the image
         await client.sendMessage(chatId, message);
         console.log(`📨 Sent RSVP message to ${phone}`);
+        }
+        catch (err) {
+                console.error(`❌ Failed to send message to ${phone}`);
+                await logUndeliveredMessage(phone, nameToUse, category); // Log undelivered message
+            }
+
     }
 });
 
@@ -74,13 +82,12 @@ client.on("message", async (msg) => {
         await msg.reply("תודה על ההגעה!");
         await msg.reply("כמה אנשים תגיעו?");
         waitingForPeople[senderId] = true;
-        await updateRSVP(senderId, "yes");
     } else if (userMessage === "2") {
+        await updateRSVP(senderId, "no");
         await msg.reply("חבל! נקווה שתוכל להגיע בפעם הבאה.");
-        await updateRSVP(senderId, "no", 0);
     } else if (userMessage === "3") {
+        await updateRSVP(senderId, "maybe");
         await msg.reply("אשמח לעדכון בקרוב!");
-        await updateRSVP(senderId, "maybe", 0);
     } else {
         await msg.reply("❌ לא הבנתי, שלח 'התחלה' כדי לראות את האפשרויות.");
     }

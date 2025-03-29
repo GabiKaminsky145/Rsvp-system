@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Container, Box, Card, CardContent, Typography, List, ListItem, Button, Grid } from "@mui/material";
 
-function App() {
+function Dashboard() {
   const [data, setData] = useState({ yes: { guests: [], total: 0 }, no: { guests: [], total: 0 }, maybe: { guests: [], total: 0 } });
   const [open, setOpen] = useState({ yes: false, no: false, maybe: false });
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -105,21 +107,65 @@ function App() {
           })}
         </Box>
       )}
+
+      <Box display="flex" justifyContent="center" mt={4} gap={2}>
+        <Button variant="contained" color="primary" onClick={() => navigate("/messagesStatus")}>View Undelivered Messages</Button>
+      </Box>
+    </Container>
+  );
+}
+
+function UndeliveredMessages() {
+  const [undeliveredGuests, setUndeliveredGuests] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/messagesStatus")
+      .then((response) => setUndeliveredGuests(response.data))
+      .catch((error) => console.error("Error fetching undelivered data:", error));
+  }, []);
+
+  return (
+    <Container maxWidth="lg" sx={{ marginTop: 4 }}>
+      <Typography variant="h3" align="center" gutterBottom>
+        Undelivered Messages
+      </Typography>
+      <List>
+        {undeliveredGuests.map((guest) => (
+          <ListItem key={guest.phone}>
+            <Typography variant="body1">
+              {guest.guestname} (Phone: {guest.phone}, Category: {guest.category})
+            </Typography>
+          </ListItem>
+        ))}
+      </List>
+      <Box display="flex" justifyContent="center" mt={4}>
+        <Button variant="contained" color="secondary" component={Link} to="/">
+          Back to Dashboard
+        </Button>
+      </Box>
     </Container>
   );
 }
 
 const getStatusColor = (status) => {
   switch (status) {
-    case "yes":
-      return "#4caf50";
-    case "no":
-      return "#f44336";
-    case "maybe":
-      return "#ff9800";
-    default:
-      return "#1976d2";
+    case "yes": return "#4caf50";
+    case "no": return "#f44336";
+    case "maybe": return "#ff9800";
+    default: return "#1976d2";
   }
 };
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/messagesStatus" element={<UndeliveredMessages />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;

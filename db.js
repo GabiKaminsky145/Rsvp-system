@@ -30,6 +30,17 @@ const getGuestName = async (phone) => {
     }
 };
 
+// Get guest name by phone
+const getCategory = async (phone) => {
+    try {
+        const res = await pool.query("SELECT category FROM rsvp WHERE phone = $1", [phone]);
+        return res.rows.length > 0 ? res.rows[0].category : null;
+    } catch (err) {
+        console.error("❌ Error fetching category:", err);
+        return null;
+    }
+};
+
 // Get guests with "maybe" status
 const getMaybeGuests = async () => {
     try {
@@ -42,18 +53,50 @@ const getMaybeGuests = async () => {
 };
 
 // Update RSVP status and attendees
-const updateRSVP = async (phone, status, attendees = 0, category = "Unknown") => {
+const updateRSVP = async (phone, status, attendees = 0) => {
     try {
-        await pool.query(
-            "INSERT INTO rsvp (phone, status, attendees, category) VALUES ($1, $2, $3, $4) " +
-            "ON CONFLICT (phone) DO UPDATE SET status = EXCLUDED.status, attendees = EXCLUDED.attendees, category = EXCLUDED.category",
-            [phone, status, attendees, category]
-        );
-        console.log(`✅ Updated RSVP for ${phone} - Status: ${status}, Attendees: ${attendees}, Category: ${category}`);
+        if (status === "yes") {
+            await pool.query(
+                "UPDATE rsvp SET status = $1, attendees = $2 WHERE phone = $3",
+                [status, attendees, phone]
+            );
+        } else {
+            await pool.query(
+                "UPDATE rsvp SET status = $1 WHERE phone = $2",
+                [status, phone]
+            );
+        }
+        console.log(`✅ Updated RSVP for ${phone} - Status: ${status}, Attendees: ${attendees}`);
     } catch (err) {
         console.error("❌ Error updating RSVP:", err);
     }
 };
 
-module.exports = { getAllRSVPs, getGuestName, getMaybeGuests, updateRSVP };
-module.exports = pool; // ✅ Ensure pool is properly exported
+// Log undelivered WhatsApp messages
+const logUndeliveredMessage = async (phone, guestname, category) => {
+    try {
+        await pool.query(
+            "INSERT INTO undelivered_messages (phone, guestname, category) VALUES ($1, $2, $3) " +
+            "ON CONFLICT (phone) DO NOTHING",
+            [phone, guestname, category]
+        );
+        console.log(`❌ Logged undelivered message for ${phone}`);
+    } catch (err) {
+        console.error("❌ Error logging undelivered message:", err);
+    }
+};
+
+// Get all guests who didn't receive a WhatsApp message
+const getUndeliveredMessages = async () => {
+    try {
+        const res = await pool.query("SELECT * FROM undelivered_messages");
+        return res.rows;
+    } catch (err) {
+        console.error("❌ Error fetching undelivered messages:", err);
+        return [];
+    }
+};
+
+module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests, 
+    updateRSVP, logUndeliveredMessage, getUndeliveredMessages, getCategory };
+

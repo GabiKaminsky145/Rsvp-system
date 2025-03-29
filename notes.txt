@@ -1,10 +1,11 @@
 tech notes
 
-- when someone register and set status , category is Unknown
+- when someone register and set status , category is Unknown - Fixed
 
 featurs:
 
-- add new dashboard for who actually recieve the whatsapp message and who not recieve with phone and name
+- add new dashboard for who actually recieve the whatsapp 
+    message and who not recieve with phone and name - Done
 - maybe scheduler
 
 regular notes 
