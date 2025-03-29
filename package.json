@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,10 +14,19 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mysql2": "^3.14.0",
+    "nodemon": "^3.1.9",
     "pg": "^8.14.1",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.26.0",
+    "whatsapp-web.js": "^1.27.0",
     "xlsx": "^0.18.5"
   },
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabiKaminsky145/Rsvp-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GabiKaminsky145/Rsvp-system/issues"
+  },
+  "homepage": "https://github.com/GabiKaminsky145/Rsvp-system#readme"
 }
