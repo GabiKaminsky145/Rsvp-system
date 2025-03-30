@@ -17,30 +17,28 @@ const generateInviteMessage = (guestName) => {
         "3️⃣ אולי";
 };
 
-// Function to send message with a delay
-const sendMessageWithDelay = async (chatId, message, delay) => {
+// Function to send a message with delay
+const sendMessageWithDelay = async (chatId, guestName, category, delay) => {
     try {
-        await client.sendMessage(chatId, message);
+        await client.sendMessage(chatId, generateInviteMessage(guestName));
         console.log(`📨 Sent RSVP message to ${chatId}`);
     } catch (err) {
-        console.error(`❌ Failed to send message to ${chatId}`);
+        console.error(`❌ Failed to send message to ${chatId}: ${err.message}`);
+        await logUndeliveredMessage(chatId.replace("@c.us", ""), guestName, category);
     }
 };
 
 // Function to send messages with rate limiting
 const sendMessagesToGuests = async (guests) => {
-    const delayBetweenMessages = 3000; // Delay of 3 seconds (3000 milliseconds)
+    const delayBetweenMessages = 3000; // 3-second delay
 
-    for (let i = 0; i < guests.length; i++) {
-        const guest = guests[i];
-        const chatId = guest + "@c.us"; // Ensure the format is correct
-        const guestName = await getGuestName(guest);
-        const message = generateInviteMessage(guestName);
+    for (let phone of guests) {
+        const chatId = phone + "@c.us";
+        const guestName = await getGuestName(phone);
+        const category = await getCategory(phone);
 
-        await sendMessageWithDelay(chatId, message, delayBetweenMessages);
-
-        // Adding a delay of 3 seconds before sending the next message
-        await new Promise(resolve => setTimeout(resolve, delayBetweenMessages));
+        await sendMessageWithDelay(chatId, guestName, category, delayBetweenMessages);
+        await new Promise(resolve => setTimeout(resolve, delayBetweenMessages)); // Delay before next message
     }
 };
 
@@ -86,7 +84,6 @@ client.on("message", async (msg) => {
         await updateRSVP(senderId, "no");
         await msg.reply("היינו שמחים לראותכם, אבל תודה לכם!😢" + 
             "\n באפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'");
-        
     } else if (userMessage === "3") {
         await updateRSVP(senderId, "maybe");
         await msg.reply("תודה על התשובה!🤔 " + 
