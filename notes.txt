@@ -1,6 +1,8 @@
 tech notes
 
 - when someone register and set status , category is Unknown - Fixed
+- no allow to user choose again, unless they type start - Fixed
+- Hide password DB
 
 featurs:
 
