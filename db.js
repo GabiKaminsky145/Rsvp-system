@@ -1,5 +1,4 @@
 const { Pool } = require("pg");
-require("dotenv").config(); // Load environment variables
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL || "postgresql://gabi_test:H0RMp6bDLRffjzByZdhiAwLk6hmwyZOe@dpg-cvndf4gdl3ps73akpg80-a.oregon-postgres.render.com/rsvp_4x1x",
