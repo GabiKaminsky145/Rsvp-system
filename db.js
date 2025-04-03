@@ -1,11 +1,11 @@
 const { Pool } = require("pg");
+require("dotenv").config(); // Load environment variables
 
 const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
+    connectionString: process.env.DATABASE_URL || "postgresql://gabi_test:H0RMp6bDLRffjzByZdhiAwLk6hmwyZOe@dpg-cvndf4gdl3ps73akpg80-a.oregon-postgres.render.com/rsvp_4x1x",
+    ssl: {
+        rejectUnauthorized: false // Required for Render's PostgreSQL
+    }
 });
 
 // Get all guests with their category, RSVP status, and number of attendees
@@ -30,7 +30,7 @@ const getGuestName = async (phone) => {
     }
 };
 
-// Get guest name by phone
+// Get guest category by phone
 const getCategory = async (phone) => {
     try {
         const res = await pool.query("SELECT category FROM rsvp WHERE phone = $1", [phone]);
@@ -99,4 +99,3 @@ const getUndeliveredMessages = async () => {
 
 module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests, 
     updateRSVP, logUndeliveredMessage, getUndeliveredMessages, getCategory };
-
