@@ -1,3 +1,2 @@
-2025/04/03-21:40:17.743 1cf8 Reusing MANIFEST C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001
-2025/04/03-21:40:17.743 1cf8 Recovering log #3
-2025/04/03-21:40:17.744 1cf8 Reusing old log C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Service Worker\Database/000003.log 
+2025/04/04-00:53:29.687 2348 Creating DB C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Service Worker\Database since it was missing.
+2025/04/04-00:53:29.705 2348 Reusing MANIFEST C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001

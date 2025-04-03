@@ -1,10 +1,14 @@
 const { Pool } = require("pg");
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || "postgresql://gabi_test:H0RMp6bDLRffjzByZdhiAwLk6hmwyZOe@dpg-cvndf4gdl3ps73akpg80-a.oregon-postgres.render.com/rsvp_4x1x",
+    user: "avnadmin", // Aiven provided username
+    host: "rsvp-rsvp.k.aivencloud.com", // Aiven provided host
+    database: "defaultdb", // Aiven provided database name
+    password: "AVNS_pFMUXfqcvum6kzDDT3S", // Aiven provided password
+    port: 20418, // Aiven provided port
     ssl: {
-        rejectUnauthorized: false // Required for Render's PostgreSQL
-    }
+        rejectUnauthorized: false, // Ensure SSL is enabled for connection
+    },
 });
 
 // Get all guests with their category, RSVP status, and number of attendees

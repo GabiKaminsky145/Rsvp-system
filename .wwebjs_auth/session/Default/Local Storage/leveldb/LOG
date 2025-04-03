@@ -1,3 +1,2 @@
-2025/04/03-21:40:17.737 3910 Reusing MANIFEST C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
-2025/04/03-21:40:17.738 3910 Recovering log #10
-2025/04/03-21:40:17.738 3910 Reusing old log C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Local Storage\leveldb/000010.log 
+2025/04/04-00:53:26.328 2348 Creating DB C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Local Storage\leveldb since it was missing.
+2025/04/04-00:53:26.340 2348 Reusing MANIFEST C:\Users\Eli\Desktop\Rsvp-system\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
