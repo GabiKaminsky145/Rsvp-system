@@ -1,9 +1,9 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer");
 process.env.PUPPETEER_EXECUTABLE_PATH = puppeteer.executablePath();
+
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("./db");
-const fs = require("fs");
 
 const waitingForPeople = {};
 const userResponses = {};  // New object to track responses

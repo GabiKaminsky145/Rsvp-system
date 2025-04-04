@@ -1,14 +1,12 @@
 {
   "name": "whatsapp-bot",
   "version": "1.0.0",
-  "main": "index.js",
-"scripts": {
-  "start": "pm2 start whatsapp-bot.js --no-daemon",
-  "postinstall": "puppeteer install"
-},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Wedding RSVP bot with WhatsApp integration",
+  "main": "whatsapp-bot.js",
+  "scripts": {
+    "start": "npx pm2 start whatsapp-bot.js --no-daemon",
+    "postinstall": "puppeteer install"
+  },
   "dependencies": {
     "@mui/icons-material": "^7.0.0",
     "cors": "^2.8.5",
@@ -22,7 +20,9 @@
     "whatsapp-web.js": "^1.27.0",
     "xlsx": "^0.18.5"
   },
-  "description": "",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GabiKaminsky145/Rsvp-system.git"
