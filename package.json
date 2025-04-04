@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "whatsapp-bot.js",
   "scripts": {
-    "start": "node whatsapp-bot.js",
+    "start": "node index.js",
     "postinstall": "PUPPETEER_SKIP_DOWNLOAD=false PUPPETEER_PRODUCT=chrome npm install puppeteer"
   },
   "dependencies": {
