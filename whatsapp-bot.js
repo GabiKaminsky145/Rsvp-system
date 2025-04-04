@@ -1,3 +1,4 @@
+require('./patchPuppeteer');
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("./db");
@@ -48,6 +49,10 @@ const sendMessagesToGuests = async (guests) => {
 
 const client = new Client({
     authStrategy: new LocalAuth(),
+    puppeteer: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    },
 });
 
 client.on("qr", (qr) => {
