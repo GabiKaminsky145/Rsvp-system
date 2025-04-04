@@ -2,10 +2,10 @@
   "name": "whatsapp-bot",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node patchPuppeteer.js && npx pm2-runtime ecosystem.config.js"
-  },
+"scripts": {
+  "start": "pm2 start whatsapp-bot.js --no-daemon",
+  "postinstall": "puppeteer install"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

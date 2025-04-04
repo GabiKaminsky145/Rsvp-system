@@ -1,4 +1,5 @@
-require('./patchPuppeteer');
+const puppeteer = require('puppeteer');
+process.env.PUPPETEER_EXECUTABLE_PATH = puppeteer.executablePath();
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("./db");
