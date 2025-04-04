@@ -1,11 +1,10 @@
 {
   "name": "whatsapp-bot",
   "version": "1.0.0",
-  "description": "Wedding RSVP bot with WhatsApp integration",
   "main": "whatsapp-bot.js",
   "scripts": {
     "start": "npx pm2 start whatsapp-bot.js --no-daemon",
-    "postinstall": "puppeteer install"
+    "postinstall": "PUPPETEER_SKIP_DOWNLOAD=false PUPPETEER_PRODUCT=chrome npm install puppeteer"
   },
   "dependencies": {
     "@mui/icons-material": "^7.0.0",
