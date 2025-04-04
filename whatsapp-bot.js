@@ -58,16 +58,15 @@ const client = new Client({
 });
 
 client.on('qr', async (qr) => {
-  console.log('QR RECEIVED, saving to file...');
-
-  try {
-    const outputPath = path.join(__dirname, 'qr-code.png');
-    await qrcode.toFile(outputPath, qr);
-    console.log('✅ QR code saved to:', outputPath);
-  } catch (err) {
-    console.error('❌ Error saving QR code:', err);
-  }
-});
+    console.log('QR RECEIVED, saving to file...');
+    const qrPath = path.join(__dirname, 'qr.png');
+    try {
+      await qrcode.toFile(qrPath, qr);
+      console.log(`✅ QR code saved to ${qrPath}`);
+    } catch (err) {
+      console.error('❌ Error saving QR code:', err);
+    }
+  });
 
 client.on("ready", async () => {
     console.log("✅ Bot is ready!");

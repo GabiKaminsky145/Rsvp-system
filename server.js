@@ -1,12 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const { getAllRSVPs, getUndeliveredMessages } = require("./db");
-
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+const path = require("path");
 
 app.use(cors());
 app.use(express.json());
+
+// Serve QR code as static file
+app.use('/qr', express.static(path.join(__dirname)));
 
 // API to get RSVP data with attendees count
 app.get("/rsvp", async (req, res) => {
