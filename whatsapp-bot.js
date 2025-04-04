@@ -2,7 +2,8 @@ const puppeteer = require("puppeteer");
 process.env.PUPPETEER_EXECUTABLE_PATH = puppeteer.executablePath();
 
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
-const qrcode = require("qrcode-terminal");
+const qrcode = require('qrcode');
+const path = require('path');
 const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("./db");
 
 const waitingForPeople = {};
@@ -56,9 +57,16 @@ const client = new Client({
     },
 });
 
-client.on("qr", (qr) => {
-    console.log("Scan the QR code below:");
-    qrcode.generate(qr, { small: true });
+client.on('qr', async (qr) => {
+  console.log('QR RECEIVED, saving to file...');
+
+  try {
+    const outputPath = path.join(__dirname, 'qr-code.png');
+    await qrcode.toFile(outputPath, qr);
+    console.log('✅ QR code saved to:', outputPath);
+  } catch (err) {
+    console.error('❌ Error saving QR code:', err);
+  }
 });
 
 client.on("ready", async () => {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "whatsapp-bot.js",
   "scripts": {
-    "start": "npx pm2 start whatsapp-bot.js --no-daemon",
+    "start": "node whatsapp-bot.js",
     "postinstall": "PUPPETEER_SKIP_DOWNLOAD=false PUPPETEER_PRODUCT=chrome npm install puppeteer"
   },
   "dependencies": {
@@ -15,7 +15,7 @@
     "pg": "^8.14.1",
     "pm2": "^6.0.5",
     "puppeteer": "^24.6.0",
-    "qrcode-terminal": "^0.12.0",
+    "qrcode": "^1.5.4",
     "whatsapp-web.js": "^1.27.0",
     "xlsx": "^0.18.5"
   },
