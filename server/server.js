@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { getAllRSVPs, getUndeliveredMessages } = require("./db");
+const { getAllRSVPs, getUndeliveredMessages } = require("../shared/db");
 
 const app = express();
 const PORT = 5000;
@@ -16,8 +16,6 @@ app.get("/rsvp", async (req, res) => {
         if (!rsvpData || rsvpData.length === 0) {
             return res.status(404).json({ error: "No RSVP data found" });
         }
-
-        console.log("Fetched RSVP Data:", rsvpData);  // For debugging
 
         // Group data by RSVP status and calculate total attendees
         const groupedData = { yes: { guests: [], total: 0 }, no: { guests: [], total: 0 }, maybe: { guests: [], total: 0 } };

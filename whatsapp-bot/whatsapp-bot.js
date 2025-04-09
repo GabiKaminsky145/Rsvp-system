@@ -1,6 +1,6 @@
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("./db");
+const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("../shared/db");
 const fs = require("fs");
 
 const waitingForPeople = {};
@@ -102,19 +102,19 @@ client.on("message", async (msg) => {
         waitingForPeople[senderId] = true;  // Wait for number of people
     } else if (userMessage === "2" || userMessage === "לא") {
         await updateRSVP(senderId, "no");
-        await msg.reply("היינו שמחים לראותכם, אבל תודה לכם!😢" + 
+        await msg.reply("היינו שמחים לראותכם, אבל תודה לכם!😢" +
             "\n באפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'");
         userResponses[senderId] = "no"; // Mark as responded
     } else if (userMessage === "3" || userMessage === "אולי") {
         await updateRSVP(senderId, "maybe");
-        await msg.reply("תודה על התשובה!🤔 " + 
+        await msg.reply("תודה על התשובה!🤔 " +
             "\nבאפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'🔄");
         userResponses[senderId] = "maybe"; // Mark as responded
     } else {
-        await msg.reply(" אפשרות לא קיימת❌\n\n" +  
-            "🔹 *בחר אחת מהאפשרויות וענה במספר (לדוגמא: השב 1 )*\n" +  
-            "1️⃣ מגיע/ה\n" +  
-            "2️⃣ לא מגיע/ה\n" +  
+        await msg.reply(" אפשרות לא קיימת❌\n\n" +
+            "🔹 *בחר אחת מהאפשרויות וענה במספר (לדוגמא: השב 1 )*\n" +
+            "1️⃣ מגיע/ה\n" +
+            "2️⃣ לא מגיע/ה\n" +
             "3️⃣ אולי");
     }
 });

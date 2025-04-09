@@ -1,7 +1,6 @@
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
+
 const { Pool } = require("pg");
-const fs = require("fs");
-const path = require("path");
 
 const pool = new Pool({
     user: process.env.DB_USER,
@@ -10,10 +9,12 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
     ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync(path.join(__dirname, 'ca-certificate.pem')), // Path to the certificate file
-    },
+        rejectUnauthorized: false, // Ensure SSL is enabled for connection
+    }
 });
+
+console.log(process.env.DB_USER, process.env.DB_HOST, process.env.DB_NAME, process.env.DB_PASSWORD, process.env.DB_PORT);
+
 
 // Get all guests with their category, RSVP status, and number of attendees
 const getAllRSVPs = async () => {
