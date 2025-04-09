@@ -1,13 +1,17 @@
+require('dotenv').config();
 const { Pool } = require("pg");
+const fs = require("fs");
+const path = require("path");
 
 const pool = new Pool({
-    user: "avnadmin", // Aiven provided username
-    host: "rsvp-rsvp.k.aivencloud.com", // Aiven provided host
-    database: "defaultdb", // Aiven provided database name
-    password: "AVNS_pFMUXfqcvum6kzDDT3S", // Aiven provided password
-    port: 20418, // Aiven provided port
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
     ssl: {
-        rejectUnauthorized: false, // Ensure SSL is enabled for connection
+        rejectUnauthorized: false,
+        ca: fs.readFileSync(path.join(__dirname, 'ca-certificate.pem')), // Path to the certificate file
     },
 });
 
@@ -100,5 +104,5 @@ const getUndeliveredMessages = async () => {
     }
 };
 
-module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests, 
+module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests,
     updateRSVP, logUndeliveredMessage, getUndeliveredMessages, getCategory };
