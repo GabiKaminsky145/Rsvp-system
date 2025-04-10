@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { getAllRSVPs, getUndeliveredMessages } = require("../shared/db");
+const { getAllRSVPs, getUndeliveredMessages } = require("./shared/db");
 
 const app = express();
 const PORT = 5000;
