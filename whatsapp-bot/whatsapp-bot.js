@@ -85,9 +85,15 @@ client.on("message", async (msg) => {
     if (waitingForPeople[senderId]) {
         if (/^\d+$/.test(userMessage)) {
             const numberOfPeople = parseInt(userMessage, 10);
+            if (numberOfPeople <= 0 || numberOfPeople > 7) {
+                await msg.reply("❌ מספר אנשים לא תקין. אנא שלח מספר בין 1 ל-7.");
+                return;
+            }
             await updateRSVP(senderId, "yes", numberOfPeople);
             await msg.reply(`תודה רבה על הרישום!✅ \nנשמח שתחגגו איתנו 🎉\n מצורף לינק לוויז לדרך הגעה:📍\n${wazeLink}` +
-                `\n ניתן להוסיף את החתונה ליומן שלך:📅 ${calendarLink}`);
+                `\n ניתן להוסיף את החתונה ליומן שלך:📅 ${calendarLink}
+                \n\n במידה וישנו עדכון או שינוי
+                "\nבאפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'🔄"`);
             delete waitingForPeople[senderId]; // Finish the waiting state
             userResponses[senderId] = "yes"; // Mark as responded
         } else {
