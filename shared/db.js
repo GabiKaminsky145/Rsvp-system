@@ -52,7 +52,7 @@ const getCategory = async (phone) => {
 // Get guests with "maybe" status
 const getMaybeGuests = async () => {
     try {
-        const res = await pool.query("SELECT phone FROM rsvp WHERE status = 'maybe'");
+        const res = await pool.query("SELECT phone FROM rsvp WHERE status = 'maybe' OR status = 'not_responded'");
         return res.rows.map(row => row.phone);
     } catch (err) {
         console.error("❌ Error fetching maybe guests:", err);

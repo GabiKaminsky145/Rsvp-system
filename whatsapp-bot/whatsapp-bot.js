@@ -21,6 +21,13 @@ const generateInviteMessage = (guestName) => {
 
 const sendMessageWithDelay = async (chatId, guestName, category, delay) => {
     try {
+        const isRegistered = await client.isRegisteredUser(chatId);
+        if (!isRegistered) {
+            console.warn(`⚠️ ${chatId} is not a registered WhatsApp user.`);
+            await logUndeliveredMessage(chatId.replace("@c.us", ""), guestName, category);
+            return;
+        }
+
         await client.sendMessage(chatId, generateInviteMessage(guestName));
         console.log(`📨 Sent RSVP message to ${chatId}`);
     } catch (err) {
@@ -28,6 +35,8 @@ const sendMessageWithDelay = async (chatId, guestName, category, delay) => {
         await logUndeliveredMessage(chatId.replace("@c.us", ""), guestName, category);
     }
 };
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const sendMessagesToGuests = async (guests) => {
     const delayBetweenMessages = 3000;
@@ -37,8 +46,12 @@ const sendMessagesToGuests = async (guests) => {
         const guestName = await getGuestName(phone);
         const category = await getCategory(phone);
 
+        // Delay before checking if the number is registered
+        await delay(1000);
+
         await sendMessageWithDelay(chatId, guestName, category, delayBetweenMessages);
-        await new Promise(resolve => setTimeout(resolve, delayBetweenMessages));
+
+        await delay(delayBetweenMessages);
     }
 };
 
