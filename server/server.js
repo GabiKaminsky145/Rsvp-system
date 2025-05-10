@@ -18,13 +18,22 @@ app.get("/rsvp", async (req, res) => {
         }
 
         // Group data by RSVP status and calculate total attendees
-        const groupedData = { yes: { guests: [], total: 0 }, no: { guests: [], total: 0 }, maybe: { guests: [], total: 0 } };
+        const groupedData = {
+            yes: { guests: [], total: 0 },
+            no: { guests: [], total: 0 },
+            maybe: { guests: [], total: 0 },
+            not_responded: { guests: [], total: 0 }
+        };
 
         rsvpData.forEach(guest => {
-            const statusGroup = groupedData[guest.status];
-            if (statusGroup) {
-                statusGroup.guests.push(guest);
-                statusGroup.total += guest.attendees;
+            const status = guest.status?.toLowerCase();
+            if (groupedData[status]) {
+                groupedData[status].guests.push(guest);
+                groupedData[status].total += guest.attendees;
+            } else {
+                // If status is undefined, null, or unrecognized
+                groupedData.not_responded.guests.push(guest);
+                groupedData.not_responded.total += guest.attendees || 0;
             }
         });
 

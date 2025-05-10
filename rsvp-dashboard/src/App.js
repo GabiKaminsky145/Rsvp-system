@@ -5,8 +5,19 @@ import { Container, Box, Card, CardContent, Typography, List, ListItem, Button, 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 function Dashboard() {
-  const [data, setData] = useState({ yes: { guests: [], total: 0 }, no: { guests: [], total: 0 }, maybe: { guests: [], total: 0 } });
-  const [open, setOpen] = useState({ yes: false, no: false, maybe: false });
+  const [data, setData] = useState({
+    yes: { guests: [], total: 0 },
+    no: { guests: [], total: 0 },
+    maybe: { guests: [], total: 0 },
+    not_responded: { guests: [], total: 0 }
+  });
+
+  const [open, setOpen] = useState({
+    yes: false,
+    no: false,
+    maybe: false,
+    not_responded: false
+  });
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
@@ -70,7 +81,7 @@ function Dashboard() {
       </Box>
 
       <Grid container spacing={3}>
-        {["yes", "no", "maybe"].map((status) => (
+        {["yes", "no", "maybe", "not_responded"].map((status) => (
           <Grid item xs={12} sm={6} md={4} key={status}>
             <Card sx={{ backgroundColor: getStatusColor(status), borderRadius: 3, boxShadow: 5 }}>
               <CardContent>
@@ -194,6 +205,8 @@ const getStatusColor = (status) => {
       return "#f44336"; // red
     case "maybe":
       return "#ff9800"; // orange
+    case "not_responded":
+      return "#9e9e9e"; // gray
     default:
       return "#9e9e9e"; // gray fallback
   }

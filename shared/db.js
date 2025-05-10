@@ -80,6 +80,30 @@ const updateRSVP = async (phone, status, attendees = 0) => {
     }
 };
 
+// Get waiting_for_people state
+const isWaitingForPeople = async (phone) => {
+    try {
+        const res = await pool.query("SELECT waiting_for_people FROM rsvp WHERE phone = $1", [phone]);
+        return res.rows.length > 0 ? res.rows[0].waiting_for_people : false;
+    } catch (err) {
+        console.error("❌ Error fetching waiting_for_people:", err);
+        return false;
+    }
+};
+
+// Set waiting_for_people true or false
+const setWaitingForPeople = async (phone, waiting) => {
+    try {
+        await pool.query(
+            "UPDATE rsvp SET waiting_for_people = $1 WHERE phone = $2",
+            [waiting, phone]
+        );
+        console.log(`🔄 Set waiting_for_people=${waiting} for ${phone}`);
+    } catch (err) {
+        console.error("❌ Error setting waiting_for_people:", err);
+    }
+};
+
 // Log undelivered WhatsApp messages
 const logUndeliveredMessage = async (phone, guestname, category) => {
     try {
@@ -106,4 +130,4 @@ const getUndeliveredMessages = async () => {
 };
 
 module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests,
-    updateRSVP, logUndeliveredMessage, getUndeliveredMessages, getCategory };
+    updateRSVP, logUndeliveredMessage, getUndeliveredMessages, getCategory, isWaitingForPeople, setWaitingForPeople };

@@ -1,6 +1,6 @@
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory } = require("../shared/db");
+const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory, setWaitingForPeople } = require("../shared/db");
 const fs = require("fs");
 
 const waitingForPeople = {};
@@ -71,6 +71,7 @@ client.on("message", async (msg) => {
     if (userMessage === "התחלה") {
         await client.sendMessage(msg.from, generateInviteMessage(guestName, senderId));
         delete waitingForPeople[senderId];
+        await setWaitingForPeople(senderId, false);
         delete userResponses[senderId];
         return;
     }
@@ -83,12 +84,13 @@ client.on("message", async (msg) => {
                 return;
             }
             await updateRSVP(senderId, "yes", numberOfPeople);
+            await setWaitingForPeople(senderId, false);
+            delete waitingForPeople[senderId];
+            userResponses[senderId] = "yes";
             await client.sendMessage(msg.from,
                 `תודה רבה על הרישום!✅ \nנשמח שתחגגו איתנו 🎉\n מצורף לינק לוויז לדרך הגעה:📍\n${wazeLink}` +
                 `\n ניתן להוסיף את החתונה ליומן שלך:📅 ${calendarLink}` +
                 `\n\n במידה וישנו עדכון או שינוי\nבאפשרותכם לשנות את בחירתכם ע"י שליחת ההודעה 'התחלה'🔄`);
-            delete waitingForPeople[senderId];
-            userResponses[senderId] = "yes";
         } else {
             await client.sendMessage(msg.from, "❌ זה לא נראה כמו מספר. אנא שלח מספר תקני.");
         }
@@ -98,16 +100,19 @@ client.on("message", async (msg) => {
     if (userMessage === "1" || userMessage === "כן" || userMessage === "מגיע") {
         await client.sendMessage(msg.from, "נשמח לראותכם איתנו!🎊\nכמה תגיעו? (רשום מספר)");
         waitingForPeople[senderId] = true;
+        await setWaitingForPeople(senderId, true);
     } else if (userMessage === "2" || userMessage === "לא") {
         await updateRSVP(senderId, "no");
+        userResponses[senderId] = "no";
+        await setWaitingForPeople(senderId, false);
         await client.sendMessage(msg.from, "היינו שמחים לראותכם, אבל תודה לכם!😢" +
             "\n באפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'");
-        userResponses[senderId] = "no";
     } else if (userMessage === "3" || userMessage === "אולי") {
         await updateRSVP(senderId, "maybe");
+        userResponses[senderId] = "maybe";
+        await setWaitingForPeople(senderId, false);
         await client.sendMessage(msg.from, "תודה על התשובה!🤔 " +
             "\nבאפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'🔄");
-        userResponses[senderId] = "maybe";
     } else {
         await client.sendMessage(msg.from, "אפשרות לא קיימת❌\n\n" +
             "🔹 *בחר אחת מהאפשרויות וענה במספר (לדוגמא: השב 1 )*\n" +
