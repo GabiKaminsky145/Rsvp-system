@@ -5,19 +5,31 @@ const fs = require("fs");
 
 const waitingForPeople = {};
 const userResponses = {};
-const wazeLink = "https://www.waze.com/ul/hsv8tx653k";
-const calendarLink = "https://calendar.google.com/calendar/u/0/r/eventedit?text=Wedding+of+Gabriel+and+Ortal&dates=20250604T163000Z/20250604T230000Z&details=Join+us+for+our+wedding!&location=Basico+Hall,+Nes+Ziona&pli=1";
+
+const title = "Gabriel and Ortal's Wedding";
+const startDate = "20250604T163000Z"; // 2025-06-15 16:00 UTC
+const endDate = "20250604T230000Z";   // 2025-06-15 21:00 UTC
+const details = "You're invited to our wedding! 🎉";
+const location = "Basico Hall, Nes Ziona";
+
+const calendarLink = "https://www.google.com/calendar/render?action=TEMPLATE"
+    + "&text=" + encodeURIComponent(title)
+    + "&dates=" + startDate + "/" + endDate
+    + "&details=" + encodeURIComponent(details)
+    + "&location=" + encodeURIComponent(location);
 
 // Generate invite message
 const generateInviteMessage = (guestName) => {
     const nameToUse = guestName ? guestName : "אורח";
     return `שלום, ${nameToUse}\n` +
         " הוזמנתם לחתונה של גבריאל ואורטל שתערך באולם באסיקו נס ציונה בתאריך 04.06.25💍\n" +
-        "בחר אחת מהאפשרויות והקלד מספר (לדוגמא: השב 1 )\n" +
+        "בחר אחת מהאפשרויות והקלד מספר (לדוגמא: הקלד ושלח 1 )\n" +
         "1️⃣ מגיע/ה\n" +
         "2️⃣ לא מגיע/ה\n" +
         "3️⃣ אולי";
 };
+
+const media = MessageMedia.fromFilePath("./wedding invitation.png");
 
 const sendMessageWithDelay = async (chatId, guestName, category, delay) => {
     try {
@@ -28,7 +40,10 @@ const sendMessageWithDelay = async (chatId, guestName, category, delay) => {
             return;
         }
 
-        await client.sendMessage(chatId, generateInviteMessage(guestName));
+        await client.sendMessage(chatId, media, {
+            caption: generateInviteMessage(guestName)
+        });
+
         console.log(`📨 Sent RSVP message to ${chatId}`);
     } catch (err) {
         console.error(`❌ Failed to send message to ${chatId}: ${err.message}`);
@@ -101,7 +116,7 @@ client.on("message", async (msg) => {
             delete waitingForPeople[senderId];
             userResponses[senderId] = "yes";
             await client.sendMessage(msg.from,
-                `תודה רבה על הרישום!✅ \nנשמח שתחגגו איתנו 🎉\n מצורף לינק לוויז לדרך הגעה:📍\n${wazeLink}` +
+                `תודה רבה על הרישום!✅ \nנשמח שתחגגו איתנו 🎉\n` +
                 `\n ניתן להוסיף את החתונה ליומן שלך:📅 ${calendarLink}` +
                 `\n\n במידה וישנו עדכון או שינוי\nבאפשרותכם לשנות את בחירתכם ע"י שליחת ההודעה 'התחלה'🔄`);
         } else {
@@ -111,20 +126,20 @@ client.on("message", async (msg) => {
     }
 
     if (userMessage === "1" || userMessage === "כן" || userMessage === "מגיע") {
-        await client.sendMessage(msg.from, "נשמח לראותכם איתנו!🎊\nכמה תגיעו? (רשום מספר)");
+        await client.sendMessage(msg.from, "כמה תגיעו? (רשום מספר)");
         waitingForPeople[senderId] = true;
         await setWaitingForPeople(senderId, true);
-    } else if (userMessage === "2" || userMessage === "לא") {
+    } else if (userMessage === "2" || userMessage === "לא"|| userMessage ==="לא מגיע") {
         await updateRSVP(senderId, "no");
         userResponses[senderId] = "no";
         await setWaitingForPeople(senderId, false);
-        await client.sendMessage(msg.from, "היינו שמחים לראותכם, אבל תודה לכם!😢" +
+        await client.sendMessage(msg.from, "תודה על המענה!" +
             "\n באפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'");
     } else if (userMessage === "3" || userMessage === "אולי") {
         await updateRSVP(senderId, "maybe");
         userResponses[senderId] = "maybe";
         await setWaitingForPeople(senderId, false);
-        await client.sendMessage(msg.from, "תודה על התשובה!🤔 " +
+        await client.sendMessage(msg.from, "תודה על התשובה!🤔" +
             "\nבאפשרותכם לשנות את בחירתכם ע\"י שליחת ההודעה 'התחלה'🔄");
     } else {
         await client.sendMessage(msg.from, "אפשרות לא קיימת❌\n\n" +
