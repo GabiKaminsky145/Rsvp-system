@@ -51,7 +51,7 @@ function Dashboard() {
       </Typography>
 
       <Box display="flex" justifyContent="center" gap={3} mb={4} flexWrap="wrap">
-        {["yes", "no", "maybe"].map((status) => (
+        {["yes", "no", "maybe","not_responded"].map((status) => (
           <Card
             key={status}
             sx={{
@@ -121,7 +121,7 @@ function Dashboard() {
 
       <Box mt={4}>
         <Collapse in={expanded}>
-          {["yes", "no", "maybe"].map((status) => {
+          {["yes", "no", "maybe","not_responded"].map((status) => {
             if (!open[status]) return null;
             const groupedGuests = groupByCategory(data[status].guests);
             return (

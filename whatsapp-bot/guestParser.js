@@ -12,7 +12,7 @@ const data = xlsx.utils.sheet_to_json(sheet);
 // Normalize phone number and map fields
 const normalizePhone = (phone) => {
   const digits = String(phone).replace(/\D/g, ''); // remove non-digit characters
-  return '972' + digits.slice(1);
+  return '972' + digits;
 };
 
 const transformed = data.map(row => ({
@@ -20,7 +20,7 @@ const transformed = data.map(row => ({
   attendees: parseInt(row["מספר מוזמנים"] || '0'),
   phone: normalizePhone(row["מספר פל'"] || ''),
   category: row["קירבה"] || '',
-  status: 'not responded',
+  status: 'not_responded',
 }));
 
 // PostgreSQL client setup
