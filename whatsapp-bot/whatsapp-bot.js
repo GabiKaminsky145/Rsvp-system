@@ -1,6 +1,6 @@
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const { getGuestName, getMaybeGuests, updateRSVP, logUndeliveredMessage, getCategory, setWaitingForPeople } = require("../shared/db");
+const { getGuestName, getMaybeGuests, getNotRespondedGuests, updateRSVP, logUndeliveredMessage, getCategory, setWaitingForPeople } = require("../shared/db");
 const fs = require("fs");
 
 const waitingForPeople = {};
@@ -22,7 +22,7 @@ const calendarLink = "https://www.google.com/calendar/render?action=TEMPLATE"
 const generateInviteMessage = (guestName) => {
     const nameToUse = guestName ? guestName : "אורח";
     return `שלום, ${nameToUse}\n` +
-        " הוזמנתם לחתונה של גבריאל ואורטל שתערך באולם באסיקו נס ציונה בתאריך 04.06.25💍\n" +
+        " הוזמנתם לחתונה של גבריאל קמינסקי ואורטל אמיני שתערך באולם באסיקו נס ציונה בתאריך 04.06.25💍\n" +
         "בחר אחת מהאפשרויות והקלד מספר (לדוגמא: הקלד ושלח 1 )\n" +
         "1️⃣ מגיע/ה\n" +
         "2️⃣ לא מגיע/ה\n" +
@@ -82,7 +82,7 @@ client.on("qr", (qr) => {
 client.on("ready", async () => {
     console.log("✅ Bot is ready!");
 
-    const guestsToSend = await getMaybeGuests();
+    const guestsToSend = await getNotRespondedGuests();
     await sendMessagesToGuests(guestsToSend);
 });
 

@@ -60,6 +60,17 @@ const getMaybeGuests = async () => {
     }
 };
 
+// Get guests with "not responded" status
+const getNotRespondedGuests = async () => {
+    try {
+        const res = await pool.query("SELECT phone FROM rsvp WHERE status = 'not_responded'");
+        return res.rows.map(row => row.phone);
+    } catch (err) {
+        console.error("❌ Error fetching maybe guests:", err);
+        return [];
+    }
+};
+
 // Update RSVP status and attendees
 const updateRSVP = async (phone, status, attendees = 0) => {
     try {
@@ -129,5 +140,5 @@ const getUndeliveredMessages = async () => {
     }
 };
 
-module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests,
+module.exports = { pool, getAllRSVPs, getGuestName, getMaybeGuests, getNotRespondedGuests,
     updateRSVP, logUndeliveredMessage, getUndeliveredMessages, getCategory, isWaitingForPeople, setWaitingForPeople };

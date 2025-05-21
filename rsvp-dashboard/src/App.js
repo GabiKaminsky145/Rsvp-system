@@ -134,7 +134,7 @@ function Dashboard() {
                     <Grid item xs={12} sm={6} md={4} key={index}>
                       <Card sx={{ backgroundColor: "#f5f5f5", borderRadius: 3, height: "100%", boxShadow: 4, p: 3 }}>
                         <Typography variant="subtitle1" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
-                          {category}
+                        {category} ({groupedGuests[category].length})
                         </Typography>
                         <List dense>
                           {groupedGuests[category].map((guest, i) => (
