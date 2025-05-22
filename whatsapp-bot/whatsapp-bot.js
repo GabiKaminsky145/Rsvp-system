@@ -82,7 +82,7 @@ client.on("qr", (qr) => {
 client.on("ready", async () => {
     console.log("✅ Bot is ready!");
 
-    const guestsToSend = await getNotRespondedGuests();
+    const guestsToSend = await getMaybeGuests();
     await sendMessagesToGuests(guestsToSend);
 });
 
