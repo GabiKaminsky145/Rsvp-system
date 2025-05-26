@@ -18,6 +18,7 @@ function Dashboard() {
     maybe: false,
     not_responded: false
   });
+
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
@@ -38,8 +39,14 @@ function Dashboard() {
 
   const groupByCategory = (guests) => {
     return guests.reduce((acc, guest) => {
-      if (!acc[guest.category]) acc[guest.category] = [];
-      acc[guest.category].push(guest);
+      if (!acc[guest.category]) {
+        acc[guest.category] = {
+          guests: [],
+          totalAttendees: 0,
+        };
+      }
+      acc[guest.category].guests.push(guest);
+      acc[guest.category].totalAttendees += guest.attendees;
       return acc;
     }, {});
   };
@@ -51,7 +58,7 @@ function Dashboard() {
       </Typography>
 
       <Box display="flex" justifyContent="center" gap={3} mb={4} flexWrap="wrap">
-        {["yes", "no", "maybe","not_responded"].map((status) => (
+        {["yes", "no", "maybe", "not_responded"].map((status) => (
           <Card
             key={status}
             sx={{
@@ -96,14 +103,14 @@ function Dashboard() {
                   onClick={() => handleToggle(status)}
                   sx={{
                     mt: 2,
-                    backgroundColor: '#9c27b0', // Purple button color
-                    '&:hover': { backgroundColor: '#7b1fa2' }, // Darker purple on hover
+                    backgroundColor: '#9c27b0',
+                    '&:hover': { backgroundColor: '#7b1fa2' },
                     color: 'white',
                     borderRadius: 3,
-                    fontSize: '0.875rem', // Smaller font size for better aesthetics
-                    fontFamily: '"Roboto", "Arial", sans-serif', // Elegant font family
-                    fontWeight: '500', // Lighter font weight for a more modern look
-                    padding: '8px 16px', // Adjust padding for a balanced look
+                    fontSize: '0.875rem',
+                    fontFamily: '"Roboto", "Arial", sans-serif',
+                    fontWeight: '500',
+                    padding: '8px 16px',
                   }}
                   endIcon={<ExpandMoreIcon />}
                 >
@@ -121,23 +128,23 @@ function Dashboard() {
 
       <Box mt={4}>
         <Collapse in={expanded}>
-          {["yes", "no", "maybe","not_responded"].map((status) => {
+          {["yes", "no", "maybe", "not_responded"].map((status) => {
             if (!open[status]) return null;
             const groupedGuests = groupByCategory(data[status].guests);
             return (
               <Box key={status} mb={4}>
                 <Typography variant="h5" sx={{ color: getStatusColor(status), textAlign: "center", mb: 2, fontWeight: 'bold' }}>
-                  {status.toUpperCase()} ({data[status].total} Guests)
+                  {status.toUpperCase()} ({data[status].total} Attendees)
                 </Typography>
                 <Grid container spacing={3}>
                   {Object.keys(groupedGuests).map((category, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
                       <Card sx={{ backgroundColor: "#f5f5f5", borderRadius: 3, height: "100%", boxShadow: 4, p: 3 }}>
                         <Typography variant="subtitle1" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
-                        {category} ({groupedGuests[category].length})
+                          {category} ({groupedGuests[category].totalAttendees} Attendees)
                         </Typography>
                         <List dense>
-                          {groupedGuests[category].map((guest, i) => (
+                          {groupedGuests[category].guests.map((guest, i) => (
                             <ListItem key={i} sx={{ pl: 0 }}>
                               <Typography variant="body2">
                                 {guest.guestname} ({guest.attendees} Attendees)
@@ -200,15 +207,15 @@ function UndeliveredMessages() {
 const getStatusColor = (status) => {
   switch (status) {
     case "yes":
-      return "#4caf50"; // green
+      return "#4caf50";
     case "no":
-      return "#f44336"; // red
+      return "#f44336";
     case "maybe":
-      return "#ff9800"; // orange
+      return "#ff9800";
     case "not_responded":
-      return "#9e9e9e"; // gray
+      return "#9e9e9e";
     default:
-      return "#9e9e9e"; // gray fallback
+      return "#9e9e9e";
   }
 };
 
