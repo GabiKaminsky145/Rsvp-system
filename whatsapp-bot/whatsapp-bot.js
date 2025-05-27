@@ -31,15 +31,16 @@ const generateInviteMessage = (guestName) => {
 
 const media = MessageMedia.fromFilePath("./wedding invitation.png");
 
-const sendMessageWithDelay = async (chatId, guestName, category, delay) => {
+const sendMessageWithDelay = async (chatId, guestName, category, delay, countDeliveredMessages) => {
     try {
         const isRegistered = await client.isRegisteredUser(chatId);
         if (!isRegistered) {
             console.warn(`⚠️ ${chatId} is not a registered WhatsApp user.`);
             await logUndeliveredMessage(chatId.replace("@c.us", ""), guestName, category);
+            countDeliveredMessages--;
             return;
         }
-
+        countDeliveredMessages++;
         await client.sendMessage(chatId, media, {
             caption: generateInviteMessage(guestName)
         });
@@ -47,15 +48,16 @@ const sendMessageWithDelay = async (chatId, guestName, category, delay) => {
         console.log(`📨 Sent RSVP message to ${chatId}`);
     } catch (err) {
         console.error(`❌ Failed to send message to ${chatId}: ${err.message}`);
+        countDeliveredMessages--;
         await logUndeliveredMessage(chatId.replace("@c.us", ""), guestName, category);
     }
 };
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+let countDeliveredMessages = 0;
 
 const sendMessagesToGuests = async (guests) => {
     const delayBetweenMessages = 3000;
-
     for (let phone of guests) {
         const chatId = phone + "@c.us";
         const guestName = await getGuestName(phone);
@@ -64,10 +66,11 @@ const sendMessagesToGuests = async (guests) => {
         // Delay before checking if the number is registered
         await delay(1000);
 
-        await sendMessageWithDelay(chatId, guestName, category, delayBetweenMessages);
+        await sendMessageWithDelay(chatId, guestName, category, delayBetweenMessages, countDeliveredMessages);
 
         await delay(delayBetweenMessages);
     }
+    console.log("Number of guests to send messages to: ", countDeliveredMessages);
 };
 
 const client = new Client({
