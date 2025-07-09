@@ -12,28 +12,14 @@ Built for Gabriel & Ortal’s wedding 🎉
 - ✅ Records responses in PostgreSQL (`yes` / `no` / `maybe`)  
 - ✅ Asks for number of attendees if response is "yes"  
 - ✅ Automatically retries guests who haven’t responded  
-- ✅ Runs 24/7 on a GCP VM using `pm2`  
+- ✅ Runs 24/7 on a GCP VM using `pm2`
+- ✅ Dashboard UI developed in React for full status.
 
 ---
 
 ## 📸 Demo
 
 Coming soon — sample screenshots of guest interaction
-
----
-
-## 🧱 Project Structure
-
-```bash
-Rsvp-system/
-├── index.js               # Main WhatsApp bot logic
-├── llmHelper.js           # LLM intent classification (via Ollama)
-├── shared/
-│   └── db.js              # Database helper functions
-├── wedding invitation.png # Media sent to guests
-├── package.json
-└── README.md
-```
 
 ---
 
@@ -45,6 +31,7 @@ Rsvp-system/
 - A Linux VM (tested on GCP e2-standard-2)
 - [Ollama](https://ollama.com) installed on the server (supports mistral/gemma/llama3)
 - `pm2` for background services
+- Depolyment of server and UI
 
 ---
 
